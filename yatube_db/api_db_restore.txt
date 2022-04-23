@@ -1,0 +1,4 @@
+#!/bin/bash
+pg_restore --host "127.0.0.1" --port "5432" --username "Timofey" --no-password --role "Timofey" --dbname "yatube_api" --section=data --verbose "/home/yatube_db/user.sql"
+pg_restore --host "127.0.0.1" --port "5432" --username "Timofey" --no-password --role "Timofey" --dbname "yatube_api" --section=data --verbose "/home/yatube_db/post.sql"
+pg_restore --host "127.0.0.1" --port "5432" --username "Timofey" --no-password --role "Timofey" --dbname "yatube_api" --section=data --verbose "/home/yatube_db/comment.sql"
