@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: 'Yatube API'
-  version: ''
+  version: 'v1.1'
   description: API начинается с /api/v1/
 
 servers:
@@ -125,7 +125,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Post'
+              properties:
+                text:
+                  type: string
+                  title: Текст поста
+                group:
+                  type: integer
+                  title: ID группы
       responses:
         200:
           description: Публикация
@@ -153,16 +159,15 @@ paths:
       responses:
         204:
           description: ''
-  /posts/{post_id}/comments/:
+  /comments/:
     get:
       tags:
         - COMMENTS
-      description: 'Получить список всех комментариев публикации'
+      description: 'Получить список всех комментариев'
       parameters:
-      - name: post_id
-        in: path
-        required: true
-        description: ID публикации
+      - name: post
+        in: query
+        description: ID поста
         schema:
           type: number
       responses:
@@ -179,31 +184,27 @@ paths:
       tags:
         - COMMENTS
       description: 'Создать новый комментарий для публикации'
-      parameters:
-      - name: post_id
-        in: path
-        required: true
-        description: ID публикации
-        schema:
-          type: number
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
       responses:
         200:
           content:
             application/json:
-              schema: {}
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
           description: ''
-  /posts/{post_id}/comments/{comment_id}/:
+  /comments/{comment_id}/:
     get:
       tags:
         - COMMENTS
       description: 'Получить комментарий для публикации по id'
       parameters:
-      - name: post_id
-        in: path
-        required: true
-        description: ID публикации
-        schema:
-          type: number
       - name: comment_id
         in: path
         required: true
@@ -214,65 +215,72 @@ paths:
         200:
           content:
             application/json:
-              schema: {}
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
           description: ''
     put:
       tags:
         - COMMENTS
       description: 'Обновить комментарий для публикации по id'
       parameters:
-      - name: post_id
-        in: path
-        required: true
-        description: ID публикации
-        schema:
-          type: number
       - name: comment_id
         in: path
         required: true
         description: ID комментария
         schema:
           type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
       responses:
         200:
           content:
             application/json:
-              schema: {}
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
           description: ''
     patch:
       tags:
         - COMMENTS
       description: 'Частично обновить комментарий для публикации по id'
       parameters:
-      - name: post_id
-        in: path
-        required: true
-        description: ID публикации
-        schema:
-          type: number
       - name: comment_id
         in: path
         required: true
         description: ID комментария
         schema:
           type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                text:
+                  type: string
+                  title: Текст поста
+                post:
+                  type: number
+                  title: ID поста
       responses:
         200:
           content:
             application/json:
-              schema: {}
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
           description: ''
     delete:
       tags:
         - COMMENTS
       description: 'Удалить комментарий для публикации по id'
       parameters:
-      - name: post_id
-        in: path
-        required: true
-        description: ID публикации
-        schema:
-          type: number
       - name: comment_id
         in: path
         required: true
@@ -345,12 +353,15 @@ paths:
       tags:
         - FOLLOW
       description: Получить список всех подписчиков
-      parameters:
-      - name: search
-        in: query
-        description: username тот кто подписан или на кого подписаны
-        schema:
-          type: string
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                search:
+                  type: string
+                  title: Имя пользователя
       responses:
         200:
           description: Список подписчиков
@@ -364,12 +375,7 @@ paths:
       tags:
         - FOLLOW
       description: Создать подписку
-      parameters:
-      - name: user
-        in: query
-        description: Пользователь для фильтрации по подписчикам
-        schema:
-          type: string
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -436,18 +442,21 @@ components:
           type: integer
           title: ID  поста
           readOnly: true
-        text:
-          type: string
-          title: Текст поста
         author:
           type: string
           title: username пользователя
           readOnly: true
+        text:
+          type: string
+          title: Текст поста
         pub_date:
           type: string
           format: date-time
           title: Дата публикации
           readOnly: true
+        group:
+          type: integer
+          title: ID группы
     ValidationError:
       title: Ошибка валидации
       type: object
@@ -472,27 +481,35 @@ components:
       description: Детальная информация комментария
       required:
           - text
+          - post
       properties:
         id:
           type: integer
           title: ID  комментария
           readOnly: true
-        text:
-          type: string
-          title: Текст комментария
         author:
           type: string
           title: username пользователя
           readOnly: true
+        text:
+          type: string
+          title: Текст комментария
         pub_date:
           type: string
           format: date-time
           title: Дата публикации комментария
           readOnly: true
+        post:
+          type: integer
+          title: ID поста
     Follow:
       title: Подписчики
       type: object
       properties:
+        id:
+          type: integer
+          title: ID  Подписки
+          readOnly: true
         user:
           type: string
           title: username кто подписался
@@ -502,7 +519,13 @@ components:
     Group:
       title: Группы
       type: object
+      required:
+        - title
       properties:
+        id:
+          type: integer
+          title: ID  группы
+          readOnly: true
         title:
           type: string
-          title: На кого подписаться
+          title: Название группы

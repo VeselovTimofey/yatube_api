@@ -33,11 +33,11 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE,
                              related_name="comments")
     text = models.TextField()
-    created = models.DateTimeField("Дата добавления", auto_now_add=True,
-                                   db_index=True)
+    pub_date = models.DateTimeField("Дата добавления", auto_now_add=True,
+                                    db_index=True)
 
     class Meta:
-        ordering = ["-created"]
+        ordering = ["-pub_date"]
 
 
 class Follow(models.Model):

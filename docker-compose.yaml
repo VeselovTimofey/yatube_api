@@ -17,7 +17,7 @@ services:
   yatube_api:
     container_name: yatube_api
     build: .
-    image: vestimofey/yatube_api:v1.0
+    image: vestimofey/yatube_api:v1.1
     restart: always
     volumes:
       - static_value:/app/static/
