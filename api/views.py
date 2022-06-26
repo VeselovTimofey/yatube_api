@@ -5,10 +5,10 @@ from rest_framework import mixins, viewsets
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 
-from .models import Comment, Follow, Group, Post
-from .permissions import IsUserOwner
-from .serializers import (CommentSerializer, FollowSerializer,
-                          GroupSerializer, PostSerializer)
+from api.models import Comment, Follow, Group, Post
+from api.permissions import IsUserOwner
+from api.serializers import (CommentSerializer, FollowSerializer,
+                             GroupSerializer, PostSerializer)
 
 
 class PostViewSet(viewsets.ModelViewSet):

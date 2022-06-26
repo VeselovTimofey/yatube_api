@@ -16,7 +16,6 @@ services:
 
   yatube_api:
     container_name: yatube_api
-    build: .
     image: vestimofey/yatube_api:v1.1
     restart: always
     volumes:
